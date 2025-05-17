@@ -5,20 +5,36 @@ import com.slack.api.methods.MethodsClient;
 import com.slack.api.methods.request.chat.ChatPostMessageRequest;
 import com.slack.api.methods.response.chat.ChatPostMessageResponse;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class beyondSlack {
+
     public static void main(String[] args) {
-        beyondSlack bot = new beyondSlack(); //criando o robô
-        bot.enviarMensagem("C08SPL9KM3L", "Olá, divos"); //chamando o mêtodo com o robô
+        List<String> canais = Arrays.asList(
+                "C08SPL9KM3L",
+                "C08T3H9B51N"
+        );
+
+        String mensagem = "Olá! Mensagem programada pela Beyond Analytics";
+
+        beyondSlack bot = new beyondSlack();
+        bot.enviarParaVariosCanais(canais, mensagem);
     }
+
+    public void enviarParaVariosCanais(List<String> canais, String mensagem) {
+        for (String canal : canais) {
+            enviarMensagem(canal, mensagem);
+        }
+    }
+
     public void enviarMensagem(String canal, String mensagem) {
         try {
-            String token = "slack_tocken"; // senha do rôbo
+            String token = "xoxb-xxxxxxxxxx"; //inserir senha do token
 
             Slack slack = Slack.getInstance();
-            System.out.println("Token: " + token);
             MethodsClient methods = slack.methods(token);
 
-            //criando a mensagem
             ChatPostMessageRequest request = ChatPostMessageRequest.builder()
                     .channel(canal)
                     .text(mensagem)
@@ -26,17 +42,14 @@ public class beyondSlack {
                     .iconEmoji(":robot_face:")
                     .build();
 
-            //mandando a mensagem
             ChatPostMessageResponse response = methods.chatPostMessage(request);
 
-            //valida o resultado
             if (response.isOk()) {
-                System.out.println("✅ Mensagem enviada com sucesso!");
+                System.out.println("✅ Mensagem enviada para o canal: " + canal);
             } else {
-                System.out.println("❌ Erro: " + response.getError());
+                System.out.println("❌ Erro no canal " + canal + ": " + response.getError());
             }
 
-            //tratando os erros
         } catch (Exception e) {
             e.printStackTrace();
         }
