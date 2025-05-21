@@ -9,17 +9,11 @@ import java.util.Arrays;
 import java.util.List;
 
 public class beyondSlack {
+    private MethodsClient metodos;
 
-    public static void main(String[] args) {
-        List<String> canais = Arrays.asList(
-                "C08SPL9KM3L",
-                "C08T3H9B51N"
-        );
-
-        String mensagem = "Olá! Mensagem programada pela Beyond Analytics";
-
-        beyondSlack bot = new beyondSlack();
-        bot.enviarParaVariosCanais(canais, mensagem);
+    public beyondSlack(String token) {
+        Slack slack = Slack.getInstance();
+        this.metodos = slack.methods(token);
     }
 
     public void enviarParaVariosCanais(List<String> canais, String mensagem) {
@@ -30,11 +24,6 @@ public class beyondSlack {
 
     public void enviarMensagem(String canal, String mensagem) {
         try {
-            String token = "xoxb-xxxxxxxxxx"; //inserir senha do token
-
-            Slack slack = Slack.getInstance();
-            MethodsClient methods = slack.methods(token);
-
             ChatPostMessageRequest request = ChatPostMessageRequest.builder()
                     .channel(canal)
                     .text(mensagem)
@@ -42,7 +31,7 @@ public class beyondSlack {
                     .iconEmoji(":robot_face:")
                     .build();
 
-            ChatPostMessageResponse response = methods.chatPostMessage(request);
+            ChatPostMessageResponse response = metodos.chatPostMessage(request);
 
             if (response.isOk()) {
                 System.out.println("✅ Mensagem enviada para o canal: " + canal);
